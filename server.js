@@ -10,6 +10,8 @@ const session = require("express-session");
 
 const flash = require("express-flash");
 
+const bodyParser = require("body-parser");
+
 const passport = require("passport");
 
 const initialisePassport = require("./passportConfig");
@@ -20,7 +22,7 @@ initialisePassport(passport);
 
 //referencing env variable port used in a production or port 4000 in dev mode
 
-const PORT = process.env.PGPORT || 4000;
+const PORT = 4000; 
 
 //middleware
 
@@ -33,6 +35,8 @@ app.set("view engine", "ejs");
 //allow data transfer from front end to a server
 
 app.use(express.urlencoded({extended: false}));
+
+app.use(bodyParser.json());
 
 app.use(session({
 
@@ -116,7 +120,10 @@ app.get("/users/logout", (req, res) => {
 
 app.post("/users/register", async (req,res) => {
 
+  console.log(req.body);
+
   let { name, email, password, password2 } = req.body;
+
 
   //any registration errors are gonna be pushed to this initially empty array
 
@@ -150,7 +157,7 @@ app.post("/users/register", async (req,res) => {
 
   
 
-  if (password.length < 6) {
+  if (password?.length < 6) {
 
     errors.push({ message: "Password should be at least 6 characters" });
 
